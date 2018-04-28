@@ -20,48 +20,57 @@
             <i class="icon icon-right"></i>
         </div>
         <div class="recommend-list">
-            <div class="findsheetlist">
+            <div class="findsheetlist" :id="item.id" v-for="(item, index) in songsList" :key="index" v-if="!(index>17)" @click="handleTargetDetailList">
                 <div class="content">
-                    <div class="image" style="background-image: url(&quot;http://oiq8j9er1.bkt.clouddn.com/music_%E6%88%91%E4%BB%A5%E4%B8%BA%E6%88%91%E5%8F%AF%E4%BB%A5.jpg&quot;); background-size: cover; background-position: center center;"></div> 
+                    <div class="image" :style="{
+                            backgroundImage: 'url('+item.coverImgUrl+')',
+                            backgroundSize: 'cover',
+                            backgroundPosition: 'center center'
+                        }"></div> 
                     <span class="toprighttips">
-                        <i class="icon icon-erji"></i>56万
+                        <i class="icon icon-erji"></i>{{ Math.round(item.playCount / 10000) }}万
                     </span>
                 </div>
-                <div class="title">「华语情歌」想得却不可得,你奈人生何</div>
-            </div>
-            <div class="findsheetlist">
-                <div class="content">
-                    <div class="image" style="background-image: url(&quot;http://oiq8j9er1.bkt.clouddn.com/music_%E6%88%91%E4%BB%A5%E4%B8%BA%E6%88%91%E5%8F%AF%E4%BB%A5.jpg&quot;); background-size: cover; background-position: center center;"></div> 
-                    <span class="toprighttips">
-                        <i class="icon icon-erji"></i>56万
-                    </span>
-                </div>
-                <div class="title">「华语情歌」想得却不可得,你奈人生何</div>
-            </div>
-            <div class="findsheetlist">
-                <div class="content">
-                    <div class="image" style="background-image: url(&quot;http://oiq8j9er1.bkt.clouddn.com/music_%E6%88%91%E4%BB%A5%E4%B8%BA%E6%88%91%E5%8F%AF%E4%BB%A5.jpg&quot;); background-size: cover; background-position: center center;"></div> 
-                    <span class="toprighttips">
-                        <i class="icon icon-erji"></i>56万
-                    </span>
-                </div>
-                <div class="title">「华语情歌」想得却不可得,你奈人生何</div>
+                <div class="title"> {{ item.name }}</div>
             </div>
         </div>
     </div>  
 
-
 </template>
 <script>
     import SwiperMine from "@/components/SwiperMine";
+    import axios from "axios";
+    import { mapState } from 'vuex'
+
 
     export default {
-      components: {
-        SwiperMine
-      }
+        data(){
+            return{
+                songsList: []
+            }
+        },
+        methods: {
+            handleTargetDetailList(e){
+                this.$store.commit("ListOnOff")
+                this.$store.commit("DetailListTip", e.currentTarget.id)
+            }
+        },
+        computed: {
+            listOnOff () {
+                return this.$store.state.listOnOff
+            }
+        },
+        components: {
+            SwiperMine
+        },
+        mounted(){
+            axios.get("/top/playlist/highquality").then((res) => {
+                this.songsList = res.data.playlists
+            })
+        }
     }
 </script>
-<style>
+<style scoped>
     .findrecommend .recommend-type, .findrecommend .recommend-type .div-type {
         display: -webkit-box;
         display: -ms-flexbox;
@@ -146,11 +155,13 @@
         vertical-align: middle;
     }
     .findrecommend .recommend-list {
-        display: flex;
+        display: flex; 
         justify-content: space-around;
-        align-items: center
+        align-items: center;
+        flex-wrap: wrap 
     }
     .findsheetlist {
+        display: inline-block;
         width: 33%;
         box-sizing: border-box;
         vertical-align: top;

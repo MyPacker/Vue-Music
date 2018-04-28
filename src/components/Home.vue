@@ -99,7 +99,7 @@
         }
     }
 </script>
-<style>
+<style scoped>
     .option-enter-active, .option-leave-active {
         transition: all .5s;
     }

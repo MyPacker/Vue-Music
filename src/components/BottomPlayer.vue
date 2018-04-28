@@ -1,10 +1,10 @@
 <template>
     <div class="bottom-bar" @click="handleOpenMusicPanel">
         <div class="music-info">
-            <img src="http://oiq8j9er1.bkt.clouddn.com/music_%E6%88%91%E8%BF%98%E6%83%B3%E5%A5%B9.jpg" alt="" class="music-pic">
+            <img :src="img" alt="" class="music-pic">
             <div class="music-detail">
-                <p class="music-name">小酒窝</p>
-                <p class="music-singer">林俊杰,蔡卓妍</p>
+                <p class="music-name">{{ name }}</p>
+                <p class="music-singer">{{ singer }}</p>
             </div>
         </div> 
         <div class="playpause">
@@ -15,6 +15,12 @@
 </template>
 <script>
     export default {
+        data(){
+            return{
+
+            }
+        },
+        props: ["name", "img", "singer"],
         methods: {
             handleOpenMusicPanel(){
                 this.$emit("handleChangePanel")
@@ -22,11 +28,11 @@
         }
     }
 </script>
-<style>
+<style scoped>
 /*footer*/
 .bottom-bar {
     position: fixed;
-    z-index: 9;
+    z-index: 999;
     background: #fff;
     bottom: 0;
     height: 46px;

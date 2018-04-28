@@ -7,12 +7,15 @@ import SongsSheet from "@/components/SongsSheet"
 import AnchorsRadio from "@/components/AnchorsRadio"
 import RankingList from "@/components/RankingList"
 
+// 异步组件
+// const Login = r => require.ensure([], () => r(require("@/pages/Login.vue")), "login")		// 引入异步组件（这样的好处是当打开这个组件时才加载）
+
 Vue.use(Router)
 
 export default new Router({
   routes: [
     { 
-      path: "/home", 
+      path: "/home",
       component: Home,
     },
     { 

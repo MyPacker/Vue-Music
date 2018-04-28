@@ -1,24 +1,28 @@
 <template>
     <div class="musicdetail">
-        <div class="filterbg" style="background-image: url(&quot;http://oiq8j9er1.bkt.clouddn.com/music_%E6%88%91%E8%BF%98%E6%83%B3%E5%A5%B9.jpg&quot;); background-size: cover; background-position: center center;"></div>
+        <div class="filterbg" :style="{
+            backgroundImage: 'url('+ img +')',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center center'
+        }"></div>
         <div class="detailcontent">
             <div class="content-header">
                 <i class="back icon-back" @click="handleOpenMusicPanel"></i>
                 <div class="musicTopDetail">
-                    <p class="name">一千年以后</p>
-                    <p class="singer">林俊杰</p>
+                    <p class="name">{{ name }}</p>
+                    <p class="singer">{{ singer }}</p>
                 </div> 
                 <i class="share icon-share"></i>
             </div>
             <div class="content-wrapper">
                 <div class="cd">
                     <div class="swith-line">
-                        <div class="triger"></div>
+                        <div class="triger" :class="{ tripuse: rtoteOnOff }"></div>
                     </div> 
-                    <div class="cd-content" style="transform: matrix(0.143475, 0.989654, -0.989654, 0.143475, 0, 0) matrix(0.99482, 0.101656, -0.101656, 0.99482, 0, 0);">
+                    <div class="cd-content">
                         <div class="wrapper animate ">
                             <div class="cd-bg"></div> 
-                            <img alt="" class="img" src="http://oiq8j9er1.bkt.clouddn.com/music_%E5%A5%B9%E8%AF%B4.jpg">
+                            <img class="img" :class="{ rtoteImg: rtoteOnOff }" :src="img">
                         </div>
                     </div>
                 </div>
@@ -44,7 +48,7 @@
                 <div class="musicDetailCtrl">
                     <i class="playType icon-music-shunxu"></i>
                     <i class="prev icon-prevdetail"></i>
-                    <i class="playPause icon-playdetail"></i>
+                    <i class="playPause" :class="{ 'icon-playdetail': !rtoteOnOff, 'icon-pause-detail': rtoteOnOff}" @click="handleChangeToggle"></i>
                     <i class="next icon-nextdetail"></i> 
                     <i class="menu icon-list-music"></i>
                 </div>
@@ -54,15 +58,31 @@
 </template>
 <script>
     export default {
+        data(){
+            return {
+                rtoteOnOff: true
+            }
+        },
+        props: ["myid", "name", "img", "singer"],
         methods: {
             handleOpenMusicPanel(){
                 this.$emit("handleChangePanel")
+            },
+            handleChangeToggle(){
+                this.rtoteOnOff = !this.rtoteOnOff;
+                this.$emit("handleChangePlayerStatus")
             }
-            
+        },
+        mounted(){
+            console.log(this.myid)
+            if(!this.myid){
+                this.rtoteOnOff = !this.rtoteOnOff
+                
+            }
         }
     }
 </script>
-<style>
+<style scoped>
     .musicdetail .detailcontent, .musicdetail .filterbg {
         position: fixed;
         height: 100%;
@@ -176,16 +196,14 @@
         position: absolute;
         top: -14px;
         left: 50%;
-        -webkit-transform: translate3d(-16px,0,0);
-        transform: translate3d(-16px,0,0);
         width: 90px;
         height: 140px;
         background-image: url(/static/img/swith.png);
         background-size: cover;
-        -webkit-transform-origin: 14px 16px;
         transform-origin: 14px 16px;
         transition: all .3s;
         z-index: 5;
+        transform: rotate(-20deg)
     }
     .musicdetail .detailcontent .content-wrapper .cd .cd-content, .musicdetail .detailcontent .content-wrapper .cd .cd-content .wrapper {
         width: 44vh;
@@ -202,24 +220,23 @@
         width: 44vh;
         height: 44vh;
         position: absolute;
-        top: 0;
-        left: 50%;
-        -webkit-transform: translate3d(-50%,0,0);
-        transform: translate3d(-50%,0,0);
+        left: 0;
+        right: 0;
+        margin: 0 auto;
         background: url(/static/img/cd-mine.png);
         background-size: 100%;
         z-index: 2;
     }
     .musicdetail .detailcontent .content-wrapper .cd .cd-content .wrapper .img {
         position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        margin: auto;
         display: block;
         width: 28vh;
         height: 28vh;
-        top: 8vh;
-        transition: all .3s;
-        left: 50%;
-        -webkit-transform: translate3d(-50%,0,0);
-        transform: translate3d(-50%,0,0);
         z-index: 1;
     }
     .musicdetail .detailcontent .content-wrapper .musicDo {
@@ -357,5 +374,20 @@
     .musicdetail .detailcontent .content-footer .musicDetailCtrl i.menu, .musicdetail .detailcontent .content-footer .musicDetailCtrl i.playType {
         font-size: 20px;
         color: #e1e1e1;
+    }
+    .rtoteImg{
+        transform-origin: center center !important;
+        animation: myrotate 12s infinite linear !important;
+    }
+    @keyframes myrotate{
+        0%{
+            transform: rotateZ(0deg);
+        }
+        100%{
+            transform: rotateZ(360deg);
+        }
+    }
+    .musicdetail .detailcontent .content-wrapper .cd .swith-line .triger.tripuse{
+        transform: rotate(7deg)
     }
 </style>

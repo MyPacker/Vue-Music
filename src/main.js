@@ -3,6 +3,7 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
+import store from "./vuex"  // 引入Vuex仓库实例
 
 Vue.config.productionTip = false
 
@@ -10,6 +11,7 @@ Vue.config.productionTip = false
 new Vue({
   el: '#app',
   router,
+  store,    // 将仓库的实例传到应用的配置项    
   components: { App },
   template: '<App/>'
 })

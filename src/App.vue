@@ -1,16 +1,18 @@
 <template>
   <div>
+    <!-- 全局播放器 -->
+    <audio :src="globalPlayerSrc.url" autoplay="autoplay" id="myaudio"></audio>
     <div class="header">
 			<div class="header-warpper">
 				<i class="menu icon-menu" @click="sliderShow = !sliderShow;maskShow=!maskShow"></i>
 				<div class="centermenu">
           <router-link to="/home">
-            <i >
+            <i>
               <i class="music icon-music"></i>
             </i>
           </router-link>
           <router-link to="/findmusic">
-            <i >
+            <i>
               <i class="find icon-wangyi"></i>
             </i> 
           </router-link>
@@ -19,8 +21,9 @@
               <i class="community icon-community"></i>
             </i>
           </router-link>
-				</div> 
-				<i class="search icon-search"></i> 
+				</div>
+				<i class="search icon-search"></i>
+    
 			</div>
 		</div>
 		
@@ -116,16 +119,18 @@
       </div>
     </transition>  
     
-
   
-    <BottomPlayer @handleChangePanel="handleChangePanelOnOff"></BottomPlayer>
+    <BottomPlayer @handleChangePanel="handleChangePanelOnOff" :name="globalPlayerSrc.name" :img="globalPlayerSrc.img" :singer="globalPlayerSrc.singer"></BottomPlayer>
 
     <transition name="musicpanel">
       <div class="musicdetail-box" v-if="musicPanelOnOff">
-        <MusicPanel @handleChangePanel="handleChangePanelOnOff"></MusicPanel>
+        <MusicPanel @handleChangePanel="handleChangePanelOnOff" @handleChangePlayerStatus="handleChangePlayerStatus" :myid="globalPlayerSrc.musicId" :name="globalPlayerSrc.name" :img="globalPlayerSrc.img" :singer="globalPlayerSrc.singer"></MusicPanel>
       </div>
     </transition>
     
+    <transition name="musiclist">
+        <PublicList v-if="listOnOff" :detailListTip="detailListTip"></PublicList>
+    </transition>
   </div>
 
 </template>
@@ -133,8 +138,7 @@
 <script>
 import MusicPanel from '@/components/MusicPanel';
 import BottomPlayer from "@/components/BottomPlayer"
-
-var bus = new Vue()
+import PublicList from "@/components/PublicList"
 
 
 export default {
@@ -144,7 +148,19 @@ export default {
       tabOnOff: true,
       musicPanelOnOff: false,
       sliderShow: false,
-      maskShow: false
+      maskShow: false,
+      playerStatus: true
+    }
+  },
+  computed:{
+    listOnOff(){
+      return this.$store.state.listOnOff
+    },
+    detailListTip(){
+      return this.$store.state.detailListTip
+    },
+    globalPlayerSrc(){
+      return this.$store.state.globalPlayerSrc
     }
   },
   methods: {
@@ -153,11 +169,23 @@ export default {
     },
     handleChangePanelOnOff(){
       this.musicPanelOnOff = !this.musicPanelOnOff
+    },
+    handleChangePlayerStatus(){
+      console.log("guolaiaiiiaiaiiii")
+      var myaud = document.getElementById("myaudio");
+      if(this.playerStatus){
+        myaud.pause()
+      }else{
+        myaud.play()
+      }
+        this.playerStatus = !this.playerStatus
+
     }
   },
   components: {
     MusicPanel,
-    BottomPlayer
+    BottomPlayer,
+    PublicList
   }
 }
 </script>
@@ -201,6 +229,25 @@ export default {
     transform: translateY(0)
   }
 
+
+
+  
+  .musiclist-enter-active, .musiclist-leave-active {
+    transition: all .3s
+  }
+  .musiclist-enter /* .fade-leave-active below version 2.1.8 */ {
+    transform: translateY(100%)
+  }
+  .musiclist-leave-to /* .fade-leave-active below version 2.1.8 */ {
+    transform: translateX(100%);
+    opacity: 0
+  }
+  .musiclist-enter-to, .musiclist-leave /* .fade-leave-active below version 2.1.8 */ {
+    transform: translateY(0)
+  }
+  
+
+
   .musicdetail-box{
     overflow: hidden;
     position: fixed;
@@ -209,6 +256,7 @@ export default {
     bottom: 0;
     right: 0;
     z-index: 20;
+    z-index: 1000;
   }
   
 </style>
